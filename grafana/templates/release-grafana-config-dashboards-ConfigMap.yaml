@@ -1,0 +1,24 @@
+{{- $def := index .Values "default" -}}
+# Source: prometheus-operator/charts/grafana/templates/configmap-dashboard-provider.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: grafana
+    chart: grafana-4.3.2
+    release: release
+    heritage: Tiller
+  name: release-grafana-config-dashboards
+  namespace: monitoring
+data:
+  provider.yaml: |-
+    apiVersion: 1
+    providers:
+    - name: 'sidecarProvider'
+      orgId: 1
+      folder: ''
+      type: file
+      disableDeletion: false
+      allowUiUpdates: false
+      options:
+        path: /tmp/dashboards

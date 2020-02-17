@@ -1,0 +1,64 @@
+{{- $def := index .Values "default" -}}
+# Source: prometheus-operator/templates/prometheus/prometheus.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: release-prometheus-operato-prometheus
+  namespace: monitoring
+  labels:
+    app: prometheus-operator-prometheus
+    
+    chart: prometheus-operator-8.7.0
+    release: "release"
+    heritage: "Tiller"
+spec:
+  alerting:
+    alertmanagers:
+      - namespace: monitoring
+        name: release-prometheus-operato-alertmanager
+        port: web
+        pathPrefix: "/"
+        apiVersion: v2
+  image: "{{ .Values.prometheusimage.repository }}:{{ .Values.prometheusimage.tag }}"
+  version: v2.15.2
+  externalUrl: http://release-prometheus-operato-prometheus.monitoring:9090
+  paused: false
+  replicas: 1
+  logLevel:  info
+  logFormat:  logfmt
+  listenLocal: false
+  enableAdminAPI: false
+  retention: {{ .Values.prometheus.prometheusSpec.retention | quote  }}
+  routePrefix: "/"
+  serviceAccountName: release-prometheus-operato-prometheus
+  serviceMonitorSelector:
+    matchLabels:
+      release: "release"
+  storage:
+    volumeClaimTemplate:
+      selector: {}
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.prometheus.prometheusSpec.storage }}
+        storageClassName: {{ .Values.prometheus.prometheusSpec.storageClassName }}
+  serviceMonitorNamespaceSelector: {}
+  podMonitorSelector:
+    matchLabels:
+      release: "release"
+
+  podMonitorNamespaceSelector: {}
+  securityContext:
+    fsGroup: 2000
+    runAsNonRoot: true
+    runAsUser: 1000
+    
+  ruleNamespaceSelector: {}
+  ruleSelector:
+    matchLabels:
+      app: prometheus-operator
+      release: "release"
+
+  portName: web

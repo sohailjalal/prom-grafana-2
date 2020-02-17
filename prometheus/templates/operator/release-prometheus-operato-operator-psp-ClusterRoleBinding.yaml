@@ -1,0 +1,20 @@
+{{- $def := index .Values "default" -}}
+# Source: prometheus-operator/templates/prometheus-operator/psp-clusterrolebinding.yaml
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: release-prometheus-operato-operator-psp
+  labels:
+    app: prometheus-operator-operator
+    
+    chart: prometheus-operator-8.7.0
+    release: "release"
+    heritage: "Tiller"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: release-prometheus-operato-operator-psp
+subjects:
+  - kind: ServiceAccount
+    name: release-prometheus-operato-operator
+    namespace: monitoring

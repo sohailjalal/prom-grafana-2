@@ -1,0 +1,185 @@
+global:
+  env: default
+
+prometheusoperator:
+  repository: 409311323330.dkr.ecr.us-gov-west-1.amazonaws.com/promethues-grafana-sohail
+  tag: prometheus-operator
+  pullPolicy: IfNotPresent
+  image_secret_name: ecr-registry
+
+tls_proxy:  
+  repository: 409311323330.dkr.ecr.us-gov-west-1.amazonaws.com/promethues-grafana-sohail
+  tag: ghostunnel
+  pullPolicy: IfNotPresent
+  image_secret_name: ecr-registry
+
+prometheus_config_reloader:
+  repository: 409311323330.dkr.ecr.us-gov-west-1.amazonaws.com/promethues-grafana-sohail
+  tag: prometheus-config-reloader
+  pullPolicy: IfNotPresent
+  image_secret_name: ecr-registry
+
+config_reloader_image:
+  repository: 409311323330.dkr.ecr.us-gov-west-1.amazonaws.com/promethues-grafana-sohail
+  tag: configmap-reload
+  pullPolicy: IfNotPresent
+  image_secret_name: ecr-registry
+
+admission:
+  repository: 409311323330.dkr.ecr.us-gov-west-1.amazonaws.com/promethues-grafana-sohail
+  tag: kube-webhook-certgen
+  pullPolicy: IfNotPresent
+  image_secret_name: ecr-registry  
+
+kube_state_metrics:
+  repository: 409311323330.dkr.ecr.us-gov-west-1.amazonaws.com/promethues-grafana-sohail
+  tag: kube-state-metrics
+  pullPolicy: IfNotPresent
+  image_secret_name: ecr-registry
+
+prometheusimage:
+  repository: 409311323330.dkr.ecr.us-gov-west-1.amazonaws.com/promethues-grafana-sohail
+  tag: prometheus
+  pullPolicy: IfNotPresent
+  image_secret_name: ecr-registry
+
+alertmanagerimage:
+  repository: 409311323330.dkr.ecr.us-gov-west-1.amazonaws.com/promethues-grafana-sohail
+  tag: alertmanager
+  pullPolicy: IfNotPresent
+  image_secret_name: ecr-registry        
+
+nodeexporterimage:
+  repository: 409311323330.dkr.ecr.us-gov-west-1.amazonaws.com/promethues-grafana-sohail
+  tag: node-exporter
+  pullPolicy: IfNotPresent
+  image_secret_name: ecr-registry
+
+
+  
+grafana:
+  enabled: true    
+  defaultDashboardsEnabled: true  
+  
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+    datasources:
+      enabled: true
+      defaultDatasourceEnabled: true
+
+      ## Annotations for Grafana datasource configmaps
+      ##
+      annotations: {}
+
+      ## Create datasource for each Pod of Prometheus StatefulSet;
+      ## this uses headless service `prometheus-operated` which is
+      ## created by Prometheus Operator
+      ## ref: https://git.io/fjaBS
+      createPrometheusReplicasDatasources: false
+      label: grafana_datasource
+
+      
+kubeScheduler:
+  enabled: true
+
+
+alertmanager:
+  enabled: true
+
+
+kubeApiServer:
+  enabled: true
+  tlsConfig:
+    serverName: kubernetes
+    insecureSkipVerify: false
+
+
+kubelet:
+  enabled: true
+  namespace: kube-system
+
+
+kubeControllerManager:
+  enabled: true
+
+
+coreDns:
+  enabled: true
+  service:
+    port: 9153
+    targetPort: 9153
+
+
+kubeDns:
+  enabled: false
+  service:
+    dnsmasq:
+      port: 10054
+      targetPort: 10054
+    skydns:
+      port: 10055
+      targetPort: 10055
+
+
+kubeProxy:
+  enabled: true
+
+
+kubeStateMetrics:
+  enabled: true
+
+
+kube-state-metrics:
+  rbac:
+    create: true
+  podSecurityPolicy:
+    enabled: true
+
+
+nodeExporter:
+  enabled: true
+
+
+prometheusOperator:
+  enabled: true
+  kubeletService:
+    enabled: true
+    namespace: kube-system
+  
+
+prometheus:
+  enabled: true
+  prometheusSpec:  
+    retention: 30d
+    storage: 10Gi
+    storageClassName: gp2
+    
+
+kubeEtcd:
+  enabled: true  
+
+
+defaultRules:
+  create: true
+  rules:
+    alertmanager: true
+    etcd: true
+    general: true
+    k8s: true
+    kubeApiserver: true
+    kubePrometheusNodeAlerting: true
+    kubePrometheusNodeRecording: true
+    kubernetesAbsent: true
+    kubernetesApps: true
+    kubernetesResources: true
+    kubernetesStorage: true
+    kubernetesSystem: true
+    kubeScheduler: true
+    network: true
+    node: true
+    prometheus: true
+    prometheusOperator: true
+    time: true
+  

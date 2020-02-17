@@ -1,0 +1,19 @@
+{{- $def := index .Values "default" -}}
+# Source: prometheus-operator/charts/grafana/templates/clusterrolebinding.yaml
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: release-grafana-clusterrolebinding
+  labels:
+    app: grafana
+    chart: grafana-4.3.2
+    release: release
+    heritage: Tiller
+subjects:
+  - kind: ServiceAccount
+    name: release-grafana
+    namespace: monitoring
+roleRef:
+  kind: ClusterRole
+  name: release-grafana-clusterrole
+  apiGroup: rbac.authorization.k8s.io

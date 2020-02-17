@@ -1,0 +1,20 @@
+{{- $def := index .Values "default" -}}
+# Source: prometheus-operator/charts/grafana/templates/tests/test-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: release-grafana-test
+  namespace: monitoring
+  labels:
+    app: release-grafana
+    chart: "grafana-4.3.2"
+    heritage: "Tiller"
+    release: "release"
+data:
+  run.sh: |-
+    @test "Test Health" {
+      url="http://release-grafana/api/health"
+
+      code=$(curl -s -o /dev/null -I -w "%{http_code}" $url)
+      [ "$code" == "200" ]
+    }

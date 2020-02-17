@@ -1,0 +1,25 @@
+{{- $def := index .Values "default" -}}
+# Source: prometheus-operator/charts/grafana/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: release-grafana
+  namespace: monitoring
+  labels:
+    app: grafana
+    chart: grafana-4.3.2
+    release: release
+    heritage: Tiller
+data:
+  grafana.ini: |
+    [analytics]
+    check_for_updates = true
+    [grafana_net]
+    url = https://grafana.net
+    [log]
+    mode = console
+    [paths]
+    data = /var/lib/grafana/data
+    logs = /var/log/grafana
+    plugins = /var/lib/grafana/plugins
+    provisioning = /etc/grafana/provisioning

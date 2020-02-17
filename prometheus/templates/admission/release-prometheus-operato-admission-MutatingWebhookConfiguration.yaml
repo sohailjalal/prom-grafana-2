@@ -1,0 +1,29 @@
+{{- $def := index .Values "default" -}}
+# Source: prometheus-operator/templates/prometheus-operator/admission-webhooks/mutatingWebhookConfiguration.yaml
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingWebhookConfiguration
+metadata:
+  name:  release-prometheus-operato-admission
+  labels:
+    app: prometheus-operator-admission    
+    chart: prometheus-operator-8.7.0
+    release: "release"
+    heritage: "Tiller"
+webhooks:
+  - name: prometheusrulemutate.monitoring.coreos.com
+    failurePolicy: Ignore
+    rules:
+      - apiGroups:
+          - monitoring.coreos.com
+        apiVersions:
+          - "*"
+        resources:
+          - prometheusrules
+        operations:
+          - CREATE
+          - UPDATE
+    clientConfig:
+      service:
+        namespace: monitoring
+        name: release-prometheus-operato-operator
+        path: /admission-prometheusrules/mutate

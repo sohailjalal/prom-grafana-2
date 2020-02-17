@@ -1,0 +1,23 @@
+{{- $def := index .Values "default" -}}
+# Source: prometheus-operator/templates/prometheus/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: release-prometheus-operato-prometheus
+  namespace: monitoring
+  labels:
+    app: prometheus-operator-prometheus
+    self-monitor: "true"
+    
+    chart: prometheus-operator-8.7.0
+    release: "release"
+    heritage: "Tiller"
+spec:
+  ports:
+  - name: web
+    port: 9090
+    targetPort: 9090
+  selector:
+    app: prometheus
+    prometheus: release-prometheus-operato-prometheus
+  type: "ClusterIP"

@@ -1,0 +1,23 @@
+{{- $def := index .Values "default" -}}
+# Source: prometheus-operator/templates/exporters/core-dns/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: release-prometheus-operato-coredns
+  labels:
+    app: prometheus-operator-coredns
+    jobLabel: coredns
+    
+    chart: prometheus-operator-8.7.0
+    release: "release"
+    heritage: "Tiller"
+  namespace: kube-system
+spec:
+  clusterIP: None
+  ports:
+    - name: http-metrics
+      port: 9153
+      protocol: TCP
+      targetPort: 9153
+  selector:
+    k8s-app: kube-dns

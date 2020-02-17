@@ -1,0 +1,27 @@
+{{- $def := index .Values "default" -}}
+# Source: prometheus-operator/charts/prometheus-node-exporter/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: release-prometheus-node-exporter
+  namespace: monitoring
+  annotations:
+    prometheus.io/scrape: "true"
+    
+  labels:     
+    app: prometheus-node-exporter
+    heritage: Tiller
+    release: release
+    chart: prometheus-node-exporter-1.8.1
+    jobLabel: node-exporter
+    
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9100
+      targetPort: 9100
+      protocol: TCP
+      name: metrics
+  selector:
+    app: prometheus-node-exporter
+    release: release

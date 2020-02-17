@@ -1,0 +1,22 @@
+{{- $def := index .Values "default" -}}
+# Source: prometheus-operator/templates/exporters/kube-state-metrics/serviceMonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: release-prometheus-operato-kube-state-metrics
+  namespace: monitoring
+  labels:
+    app: prometheus-operator-kube-state-metrics
+    
+    chart: prometheus-operator-8.7.0
+    release: "release"
+    heritage: "Tiller"
+spec:
+  jobLabel: app.kubernetes.io/name
+  endpoints:
+  - port: http
+    honorLabels: true
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kube-state-metrics
+      app.kubernetes.io/instance: "release"

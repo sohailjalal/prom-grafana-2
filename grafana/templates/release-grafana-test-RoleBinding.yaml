@@ -1,0 +1,20 @@
+{{- $def := index .Values "default" -}}
+# Source: prometheus-operator/charts/grafana/templates/tests/test-rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: release-grafana-test
+  namespace: monitoring
+  labels:
+    app: grafana
+    chart: grafana-4.3.2
+    heritage: Tiller
+    release: release
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: release-grafana-test
+subjects:
+- kind: ServiceAccount
+  name: release-grafana-test
+  namespace: monitoring

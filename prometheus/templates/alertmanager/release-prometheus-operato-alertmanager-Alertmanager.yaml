@@ -1,0 +1,31 @@
+{{- $def := index .Values "default" -}}
+# Source: prometheus-operator/templates/alertmanager/alertmanager.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: Alertmanager
+metadata:
+  name: release-prometheus-operato-alertmanager
+  namespace: monitoring
+  labels:
+    app: prometheus-operator-alertmanager
+    
+    chart: prometheus-operator-8.7.0
+    release: "release"
+    heritage: "Tiller"
+spec:
+  image: "{{ .Values.alertmanagerimage.repository }}:{{ .Values.alertmanagerimage.tag }}"
+  version: v0.20.0
+  replicas: 1
+  listenLocal: false
+  serviceAccountName: release-prometheus-operato-alertmanager
+  externalUrl: http://release-prometheus-operato-alertmanager.monitoring:9093
+  paused: false
+  logFormat: "logfmt"
+  logLevel:  "info"
+  retention: "120h"
+  routePrefix: "/"
+  securityContext:
+    fsGroup: 2000
+    runAsNonRoot: true
+    runAsUser: 1000
+    
+  portName: web

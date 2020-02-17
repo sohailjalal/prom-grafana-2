@@ -1,0 +1,18 @@
+global:
+  env: default
+
+default:
+  replicas: 1
+
+deployment_image:
+  repository: 409311323330.dkr.ecr.us-gov-west-1.amazonaws.com/promethues-grafana-sohail
+  tag: grafana
+  pullPolicy: IfNotPresent
+  image_secret_name: ecr-registry
+
+initContainers:
+  repository: 409311323330.dkr.ecr.us-gov-west-1.amazonaws.com/promethues-grafana-sohail
+  tag: grafana-sidecar
+  pullPolicy: IfNotPresent
+  image_secret_name: ecr-registry
+   

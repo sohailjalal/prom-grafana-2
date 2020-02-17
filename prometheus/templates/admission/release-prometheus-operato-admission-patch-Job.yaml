@@ -1,0 +1,43 @@
+{{- $def := index .Values "default" -}}
+# release-prometheus-operato-admission-patch
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name:  release-prometheus-operato-admission-patch
+  namespace: monitoring
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+  labels:
+    app: prometheus-operator-admission-patch    
+    chart: prometheus-operator-8.7.0
+    release: "release"
+    heritage: "Tiller"
+spec:
+  template:
+    metadata:
+      name:  release-prometheus-operato-admission-patch
+      labels:
+        app: prometheus-operator-admission-patch        
+        chart: prometheus-operator-8.7.0
+        release: "release"
+        heritage: "Tiller"
+    spec:
+      containers:
+        - name: patch
+          image: "{{ .Values.admission.repository }}:{{ .Values.admission.tag }}"
+          imagePullPolicy: 
+          args:
+            - patch
+            - --webhook-name=release-prometheus-operato-admission
+            - --namespace=monitoring
+            - --secret-name=release-prometheus-operato-admission
+            - --patch-failure-policy=Fail
+          resources:
+            {}
+            
+      restartPolicy: OnFailure
+      serviceAccountName: release-prometheus-operato-admission
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 2000
